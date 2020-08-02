@@ -8,6 +8,7 @@ GRANT ALL PRIVILEGES ON simplewiki.* TO 'user1'@localhost;
 FLUSH PRIVILEGES;
 SHOW GRANTS FOR 'user1'@localhost;
 
+CREATE USER 'user1'@'%' IDENTIFIED BY 'password1';
 GRANT ALL PRIVILEGES ON simplewiki.* TO 'user1'@'%';
 FLUSH PRIVILEGES;
 SHOW GRANTS FOR 'user1'@'%';
