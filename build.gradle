@@ -1,0 +1,47 @@
+plugins {
+	id 'org.springframework.boot' version '2.3.2.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// springboot starter kit
+	implementation 'org.springframework.boot:spring-boot-starter'
+
+	// springboot starter web framework for rest
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// for data persistence
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// for production management
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	// mariadb java connector
+	implementation 'org.mariadb.jdbc:mariadb-java-client:2.6.0'
+
+	// springboot starter kit test
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
+
+	// Hamcrest matchers for tests
+	testImplementation 'org.hamcrest:hamcrest:2.2'
+
+	// junit
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+}
+
+test {
+	useJUnitPlatform()
+}
