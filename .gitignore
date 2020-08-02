@@ -193,4 +193,6 @@ gradle-app.setting
 ### Gradle Patch ###
 **/build/
 
+!/scripts/indexing.sql
+!/scripts/init-priv-and-grants.sql
 # End of https://www.toptal.com/developers/gitignore/api/gradle
