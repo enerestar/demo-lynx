@@ -32,7 +32,7 @@ public class RawSQLQueryController {
         // MariaDB conn
         Connection conn = null;
         PreparedStatement preparedStmt = null;
-        String mariaDBUrl = "jdbc:mariadb://localhost:3309/simplewiki?allowPublicKeyRetrieval=true&useSSL=false";
+        String mariaDBUrl = "jdbc:mariadb://localhost:3308/simplewiki?allowPublicKeyRetrieval=true&useSSL=false";
         String user = "user1";
         String password = "password1";
 
