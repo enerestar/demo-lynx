@@ -23,15 +23,15 @@
 *Step by step thoughts and implementation can be found in bash and SQL scripts*
 
 ## Architecture
-REST endpoints:
+HTTP endpoints:
 - Java Springboot Application 
-    - main REST service
+    - main HTTP service
 - Basic Java Application 
     - to prebuild outdated table, where most outdated page from each top10 category resides in
 - cURL to call the REST endpoints
 
 Server:
-- AWS EC2 free tier instance
+- AWS EC2 t2.micro instance (free tier)
     - [Specs](https://aws.amazon.com/ec2/instance-types/t2/)
 
 Script Automation:
@@ -57,14 +57,14 @@ Script Automation:
     ```
 7. Add the scripts for cron to run 1-2 min from current time
     ```
-    21 16 * * * cd /app/demo-lynx-cylnx/scripts && ./1_download.sh && ./2_init_container.sh && ./3_load_data.sh && ./4_indexing.sh
+    21 16 * * * cd ~/demo-lynx/scripts && ./1_download.sh && ./2_init_container.sh && ./3_load_data.sh && ./4_indexing.sh
     ```
    
    ### Prehandle outdated data and populate to database
 8. Once cron is done
     ```bash
    # change directory into application
-   cd app/demo-lynx-cylnx/simplewiki
+   cd demo-lynx/simplewiki
    
    # Build gradle
    gradle build
@@ -74,7 +74,7 @@ Script Automation:
     ```
 9. Change directory back to 
     ```bash
-   cd app/demo-lynx-cylnx/
+   cd demo-lynx/
    
    # Run backend REST service
    ./gradlew bootRun
