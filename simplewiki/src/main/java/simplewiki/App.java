@@ -4,11 +4,132 @@
 package simplewiki;
 
 public class App {
-    public String getGreeting() {
-        return "Hello world.";
-    }
+
+    // JDBC driver name and database URL
+    // MariaDB conn
+    static Connection conn = null;
+    static Statement stmt = null;
+    static final String mariaDBUrl = "jdbc:mariadb://localhost:3308/simplewiki?allowPublicKeyRetrieval=true&useSSL=false";
+    static final String user = "user1";
+    static final String password = "password1";
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        List<String> cattitlelist = getCatTitleList();
+        findAndInsertTop10(cattitlelist);
+    }
+
+
+    public static void findAndInsertTop10(List<String> l) {
+        PreparedStatement preparedStmt = null;
+        String sqlFindByTop10AndInsertOutdated = "INSERT INTO outdated\n" +
+                "SELECT\n" +
+                "    categorylinks.cl_to,\n" +
+                "    page_from.page_id as from_page_id,\n" +
+                "    page_from.page_title as from_page_title,\n" +
+                "    page_to.page_id as to_page_id,\n" +
+                "    page_to.page_title as to_page_title,\n" +
+                "    MIN(TIMESTAMPDIFF(MINUTE, page_to.page_touched, page_from.page_touched)) as diff\n" +
+                "FROM categorylinks \n" +
+                "-- INNER JOIN top10\n" +
+                "LEFT OUTER JOIN page AS page_from\n" +
+                "    ON page_from.page_id = categorylinks.cl_from\n" +
+                "LEFT OUTER JOIN pagelinks\n" +
+                "    ON pagelinks.pl_from = page_from.page_id\n" +
+                "LEFT OUTER JOIN page AS page_to\n" +
+                "    ON pagelinks.pl_title = page_to.page_title\n" +
+                "WHERE categorylinks.cl_to = ?\n" +
+                "AND \n" +
+                "    page_to.page_id IS NOT NULL\n" +
+                "GROUP BY \n" +
+                "    to_page_id\n" +
+                "ORDER BY\n" +
+                "    diff\n" +
+                "LIMIT 1;";
+
+        try {
+            for (int i = 0; i < l.size(); i++) {
+                System.out.println("Connecting to database...");
+                conn = DriverManager.getConnection(mariaDBUrl, user, password);
+                preparedStmt = conn.prepareStatement(sqlFindByTop10AndInsertOutdated);
+                System.out.println(l.get(i));
+                preparedStmt.setString(1, l.get(i));
+                ResultSet rs = preparedStmt.executeQuery();
+
+                while (rs.next()) {
+                    String cat_title = rs.getString("cat_title");
+                    int diff = rs.getInt("diff");
+                    System.out.println(cat_title + " : " + diff);
+                }
+                // clean up environment
+                rs.close();
+                preparedStmt.close();
+                conn.close();
+            }
+        } catch (
+                SQLException se) {
+            // handle errors for JDBC
+            se.printStackTrace();
+        } catch (Exception e) {
+            // Handle errors for Class.forName
+            e.printStackTrace();
+        } finally {
+            // finally block used to close resources
+            try {
+                if (preparedStmt != null) preparedStmt.close();
+            } catch (SQLException se2) {
+                // nothing we can do
+            }
+            try {
+                if (conn != null) conn.close();
+            } catch (SQLException se3) {
+                se3.printStackTrace();
+            }
+        }
+    }
+
+    public static List<String> getCatTitleList() {
+        List<String> l = new ArrayList<>();
+        PreparedStatement preparedStmt = null;
+        String sqlGetTop10Cat = "SELECT cat_title FROM top10;";
+
+        try {
+            // Open a connection
+            System.out.println("Connecting to database...");
+            conn = DriverManager.getConnection(mariaDBUrl, user, password);
+
+            preparedStmt = conn.prepareStatement(sqlGetTop10Cat);
+            ResultSet rs = preparedStmt.executeQuery();
+
+            while (rs.next()) {
+                String cat_title = rs.getString("cat_title");
+                l.add(cat_title);
+            }
+
+            // clean up environment
+            rs.close();
+            preparedStmt.close();
+            conn.close();
+        } catch (
+                SQLException se) {
+            // handle errors for JDBC
+            se.printStackTrace();
+        } catch (Exception e) {
+            // Handle errors for Class.forName
+            e.printStackTrace();
+        } finally {
+            // finally block used to close resources
+            try {
+                if (preparedStmt != null) preparedStmt.close();
+            } catch (SQLException se2) {
+                // nothing we can do
+            }
+            try {
+                if (conn != null) conn.close();
+            } catch (SQLException se3) {
+                se3.printStackTrace();
+            }
+        }
+        System.out.println("cat title list :: " + l);
+        return l;
     }
 }
