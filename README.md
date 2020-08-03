@@ -20,16 +20,19 @@
 - Since WIKIPEDIA dumps their SQL files using mariaDB v10.4, we shall use mariaDB v10.4 to restore the database from the sql files.
 - To ensure environment is easy to replicate, we will be using **MariaDB via docker** to setup.
 
-#####STEP BY STEP THOUGHTS AND IMPLEMENTATION CAN BE FOUND IN BASH AND SQL SCRIPTS.
+*Step by step thoughts and implementation can be found in bash and SQL scripts*
 
 ## Architecture
 REST endpoints:
-- Java Springboot Application
-- Basic Java Application - for SQL queries that requires more pre-handling
+- Java Springboot Application 
+    - main REST service
+- Basic Java Application 
+    - to prebuild outdated table, where most outdated page from each top10 category resides in
 - cURL to call the REST endpoints
 
 Server:
-- Digital Ocean (already have subscription)
+- AWS EC2 free tier instance
+    - [Specs](https://aws.amazon.com/ec2/instance-types/t2/)
 
 Script Automation:
 - Bash scripts
@@ -37,31 +40,59 @@ Script Automation:
 - Cron jobs
 
 
-###To Run
-To run SQL prehandling
-```
-gradle build
-gradle run
-```
+##Getting Started
 
-To run Java Springboot Application backend service
-```
-./gradlew bootRun
-```
+### Setup Server
+1. Create an AWS EC2 instance
+2. Install docker on EC2 Amazon Linux 2 [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html)
+3. Install Java 11 on EC2 Amazon Linux
+    ```
+    sudo amazon-linux-extras install java-openjdk11
+    ```
+4. Install Gradle libraries on instance via [SDKMAN](https://sdkman.io/install), make sure source path is correct on AWS EC2
+5. Clone repository. Make sure to run all scripts in `scripts` prior to building gradle
+6. Create a new Cronjob via 
+    ```
+    crontab -e
+    ```
+7. Add the scripts for cron to run 1-2 min from current time
+    ```
+    21 16 * * * cd /app/demo-lynx-cylnx/scripts && ./1_download.sh && ./2_init_container.sh && ./3_load_data.sh && ./4_indexing.sh
+    ```
+   
+   ### Prehandle outdated data and populate to database
+8. Once cron is done
+    ```bash
+   # change directory into application
+   cd app/demo-lynx-cylnx/simplewiki
+   
+   # Build gradle
+   gradle build
+   
+   # Run gradle to prehandle outdated pages associated with each category
+   gradle run
+    ```
+9. Change directory back to 
+    ```bash
+   cd app/demo-lynx-cylnx/
+   
+   # Run backend REST service
+   ./gradlew bootRun
+    ```
 
-To run REST service with cURL given the category title:
-```
-curl localhost:8080/api/v1/categories 
-curl localhost:8080/api/v1/categories/top10/{categorytitle}
-curl localhost:8080/api/v1/categories/other/{categorytitle} 
-eg. 
-curl localhost:8080/api/v1/categories/top10/Living_people
-```
-
-To run REST service with RAW SQL query:
-```
-eg. 
-curl -X POST localhost:8080/api/v1/sql -H 'Content-Type: application/x-www-form-urlencoded' -d 'SELECT cat_title, diff FROM outdated WHERE cat_title = 'Living_people';'
-curl -X POST localhost:8080/api/v1/sql -H 'Content-Type: application/x-www-form-urlencoded' -d 'SELECT * FROM outdated WHERE cat_title = 'Living_people';'
-```
+10. To run REST service with cURL given the category title:
+    ```
+    curl localhost:8080/api/v1/categories 
+    curl localhost:8080/api/v1/categories/top10/{categorytitle}
+    curl localhost:8080/api/v1/categories/other/{categorytitle} 
+    eg. 
+    curl localhost:8080/api/v1/categories/top10/Living_people
+    ```
+    
+    To run REST service with RAW SQL query:
+    ```
+    eg. 
+    curl -X POST localhost:8080/api/v1/sql -H 'Content-Type: application/x-www-form-urlencoded' -d 'SELECT cat_title, diff FROM outdated WHERE cat_title = 'Living_people';'
+    curl -X POST localhost:8080/api/v1/sql -H 'Content-Type: application/x-www-form-urlencoded' -d 'SELECT * FROM outdated WHERE cat_title = 'Living_people';'
+    ```
 
