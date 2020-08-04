@@ -42,7 +42,53 @@ Script Automation:
 
 ##Getting Started
 
-### Setup Server
+## Setting up locally
+#### 1. Prerequisites
+- OpenJDK 11/12
+- Gradle 6.4
+- MariaDB v10.4
+- Docker
+
+#### 2. Run with scripts
+```bash
+cd ~/demo-lynx/scripts && ./1_download.sh && ./2_init_container.sh && ./3_load_data.sh && ./4_indexing.sh
+```
+
+#### 3. Prehandle outdated data and populate to database
+```bash
+cd simplewiki
+
+# Build gradle
+gradle build
+
+# Run gradle to prehandle outdated pages associated with each category
+gradle run
+```
+
+#### 4. Run HTTP service
+```bash
+cd demo-lynx/
+./gradlew bootRun
+```
+
+#### 5. cURL
+    ```
+    curl localhost:8080/api/v1/categories 
+    curl localhost:8080/api/v1/categories/top10/{categorytitle}
+    curl localhost:8080/api/v1/categories/other/{categorytitle} 
+    eg. 
+    curl localhost:8080/api/v1/categories/top10/Living_people
+    ```
+    
+    To run REST service with RAW SQL query:
+    ```
+    eg. 
+    curl -X POST localhost:8080/api/v1/sql -H 'Content-Type: application/x-www-form-urlencoded' -d 'SELECT cat_title, diff FROM outdated WHERE cat_title = 'Living_people';'
+    curl -X POST localhost:8080/api/v1/sql -H 'Content-Type: application/x-www-form-urlencoded' -d 'SELECT * FROM outdated WHERE cat_title = 'Living_people';'
+    ```
+______________________________________________________
+
+### Setting up in a Cloud Server
 1. Create an AWS EC2 instance
 2. Install docker on EC2 Amazon Linux 2 [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html)
 3. Install Java 11 on EC2 Amazon Linux
