@@ -55,8 +55,8 @@ mkdir app
 cd app
 git clone demo-lynx and simplewiki1 into app directory
 ```
-- git clone (demo-lynx repo)[https://github.com/enerestar/demo-lynx]
-- git clone (simplewiki1 repo)[https://github.com/enerestar/simplewiki1]
+- git clone [demo-lynx repo](https://github.com/enerestar/demo-lynx)
+- git clone [simplewiki1 repo](https://github.com/enerestar/simplewiki1)
 
 #### 2. Run with scripts
 ```bash
