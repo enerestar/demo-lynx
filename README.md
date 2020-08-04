@@ -51,12 +51,12 @@ Script Automation:
 
 #### 2. Run with scripts
 ```bash
-cd ~/demo-lynx/scripts && ./1_download.sh && ./2_init_container.sh && ./3_load_data.sh && ./4_indexing.sh
+cd demo-lynx/scripts && ./1_download.sh && ./2_init_container.sh && ./3_load_data.sh && ./4_indexing.sh
 ```
 
 #### 3. Prehandle outdated data and populate to database
 ```bash
-cd simplewiki
+cd simplewiki1
 
 # Build gradle
 gradle build
@@ -68,24 +68,25 @@ gradle run
 #### 4. Run HTTP service
 ```bash
 cd demo-lynx/
+
 ./gradlew bootRun
 ```
 
 #### 5. cURL
-    ```
-    curl localhost:8080/api/v1/categories 
-    curl localhost:8080/api/v1/categories/top10/{categorytitle}
-    curl localhost:8080/api/v1/categories/other/{categorytitle} 
-    eg. 
-    curl localhost:8080/api/v1/categories/top10/Living_people
-    ```
-    
-    To run REST service with RAW SQL query:
-    ```
-    eg. 
-    curl -X POST localhost:8080/api/v1/sql -H 'Content-Type: application/x-www-form-urlencoded' -d 'SELECT cat_title, diff FROM outdated WHERE cat_title = 'Living_people';'
-    curl -X POST localhost:8080/api/v1/sql -H 'Content-Type: application/x-www-form-urlencoded' -d 'SELECT * FROM outdated WHERE cat_title = 'Living_people';'
-    ```
+```
+curl localhost:8080/api/v1/categories 
+curl localhost:8080/api/v1/categories/top10/{categorytitle}
+curl localhost:8080/api/v1/categories/other/{categorytitle} 
+eg. 
+curl localhost:8080/api/v1/categories/top10/Living_people
+```
+
+To run REST service with RAW SQL query:
+```
+eg. 
+curl -X POST localhost:8080/api/v1/sql -H 'Content-Type: application/x-www-form-urlencoded' -d 'SELECT cat_title, diff FROM outdated WHERE cat_title = 'Living_people';'
+curl -X POST localhost:8080/api/v1/sql -H 'Content-Type: application/x-www-form-urlencoded' -d 'SELECT * FROM outdated WHERE cat_title = 'Living_people';'
+```
 ______________________________________________________
 
 ### Setting up in a Cloud Server
@@ -110,7 +111,11 @@ ______________________________________________________
 8. Once cron is done
     ```bash
    # change directory into application
+<<<<<<< Updated upstream
    cd demo-lynx/simplewiki
+=======
+   cd demo-lynx/simplewiki1
+>>>>>>> Stashed changes
    
    # Build gradle
    gradle build
@@ -141,4 +146,3 @@ ______________________________________________________
     curl -X POST localhost:8080/api/v1/sql -H 'Content-Type: application/x-www-form-urlencoded' -d 'SELECT cat_title, diff FROM outdated WHERE cat_title = 'Living_people';'
     curl -X POST localhost:8080/api/v1/sql -H 'Content-Type: application/x-www-form-urlencoded' -d 'SELECT * FROM outdated WHERE cat_title = 'Living_people';'
     ```
-
