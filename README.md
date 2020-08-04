@@ -49,6 +49,15 @@ Script Automation:
 - MariaDB v10.4
 - Docker
 
+#### 1a. Setup directory
+```bash
+mkdir app
+cd app
+git clone demo-lynx and simplewiki1 into app directory
+```
+- git clone (demo-lynx repo)[https://github.com/enerestar/demo-lynx]
+- git clone (simplewiki1 repo)[https://github.com/enerestar/simplewiki1]
+
 #### 2. Run with scripts
 ```bash
 cd demo-lynx/scripts && ./1_download.sh && ./2_init_container.sh && ./3_load_data.sh && ./4_indexing.sh
@@ -111,11 +120,7 @@ ______________________________________________________
 8. Once cron is done
     ```bash
    # change directory into application
-<<<<<<< Updated upstream
-   cd demo-lynx/simplewiki
-=======
    cd demo-lynx/simplewiki1
->>>>>>> Stashed changes
    
    # Build gradle
    gradle build
